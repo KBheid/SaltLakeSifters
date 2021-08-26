@@ -28,8 +28,14 @@ class Renderable(Object):
         self.__y = y
 
     # Return the player's position
-    def position(self):
+    def getPosition(self):
         return self.__x, self.__y
+
+    def move(self, xDif, yDif):
+        newX, newY = self.__getPosition()
+        newX += xDif
+        newY += yDif
+        self.__setPosition(newX, newY)
 
 
 # Class for non-renderable objects
