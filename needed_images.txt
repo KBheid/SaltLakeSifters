@@ -1,0 +1,8 @@
+Sieve
+3 dirt pile sizes
+Shovel with dirt
+Pile of dirt with shovel in it
+Pile of dirt without shovel
+A few gems
+A few trash items (rocks or garbage)
+Tray for gems
