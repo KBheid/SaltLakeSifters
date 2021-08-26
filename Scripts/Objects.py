@@ -1,8 +1,10 @@
 import pygame
 
+
 class Object:
     def __init__(self):
         pass
+
 
 # Class for renderable objects
 class Renderable(Object):
@@ -28,6 +30,7 @@ class Renderable(Object):
     # Return the player's position
     def position(self):
         return self.__x, self.__y
+
 
 # Class for non-renderable objects
 class Nonrenderable(Object):

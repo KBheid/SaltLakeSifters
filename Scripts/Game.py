@@ -1,6 +1,8 @@
 import pygame
+import sys
 import Controls
 import Objects
+
 
 # TODO: This should be a singleton class
 class Game:
@@ -37,7 +39,8 @@ class Game:
             self.__gameLoop()
             self.__renderLoop()
 
-            pygame.display.update()
+        pygame.quit()
+        sys.exit()
 
     # Event loop
     def __eventLoop(self):
@@ -47,7 +50,8 @@ class Game:
 
     # Game loop
     def __gameLoop(self):
-        pass
+        if self.__controls.spaceKeyPressed:
+            print("test")
 
     # Render loop
     def __renderLoop(self):
@@ -55,3 +59,5 @@ class Game:
 
         for object in self.__renderables:
             self.__window.blit(object.image(), object.position())
+
+        pygame.display.update()
