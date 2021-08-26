@@ -1,5 +1,6 @@
 import pygame
 import Controls
+import Objects
 
 # TODO: This should be a singleton class
 class Game:
@@ -9,11 +10,11 @@ class Game:
         pygame.init()
 
         # Create window and set window properties
-        self.size = 800, 600
-        self.title = "Salt Lake Sifters"
+        self.__size = 800, 600
+        self.__title = "Salt Lake Sifters"
         # TODO: Load the window icon
-        self.window = pygame.display.set_mode(self.size)
-        pygame.display.set_caption(self.title)
+        self.__window = pygame.display.set_mode(self.__size)
+        pygame.display.set_caption(self.__title)
         # TODO: Set the window icon
 
         # Initialize the control system
@@ -22,12 +23,21 @@ class Game:
         # Initialize the game state
         self.__running = True
 
+        # Initialize the renderable objects queue
+        self.__renderables = []
+        object = Objects.Renderable()
+        object.loadImage("../imgs/circle.png")
+        object.setPosition(0, 0)
+        self.__renderables.append(object)
+
     # Main loop
     def mainLoop(self):
         while self.__running:
             self.__eventLoop()
             self.__gameLoop()
             self.__renderLoop()
+
+            pygame.display.update()
 
     # Event loop
     def __eventLoop(self):
@@ -41,4 +51,7 @@ class Game:
 
     # Render loop
     def __renderLoop(self):
-        pass
+        self.__window.fill((255, 255, 0))
+
+        for object in self.__renderables:
+            self.__window.blit(object.image(), object.position())

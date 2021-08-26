@@ -18,7 +18,7 @@ class Controls:
                 self.leftKeyPressed = event.key == pygame.K_LEFT or self.leftKeyPressed
                 self.rightKeyPressed = event.key == pygame.K_RIGHT or self.rightKeyPressed
                 self.spaceKeyPressed = event.key == pygame.K_SPACE or self.spaceKeyPressed
-                self.quitPressed = event.key == pygame.QUIT or self.quitPressed
+                self.quitPressed = event.key == pygame.K_ESCAPE or self.quitPressed
 
     def _reset(self):
         self.leftKeyPressed = False
