@@ -2,7 +2,11 @@
 import Game
 
 
+game = None
+
 def main():
+    global game
+
     game = Game.Game()
     game.mainLoop()
 

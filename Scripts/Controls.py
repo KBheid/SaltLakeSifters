@@ -25,7 +25,6 @@ class Controls:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.leftClickPressed = True
-                print("key press")
 
     def _reset(self):
         self.leftKeyPressed = False
