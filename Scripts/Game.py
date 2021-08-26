@@ -29,12 +29,7 @@ class Game:
         self.__renderables = []
         self.__clickables = []
 
-        object = Objects.Renderable()
-        object.loadImage("../imgs/circle.png")
-        object.setPosition(0, 0)
-        self.__renderables.append(object)
-
-        self.__clickables.append(object)
+        self.__startUp()
 
     # Add a sprite to be rendered
     def addSprite(self, sprite):
@@ -85,3 +80,10 @@ class Game:
             self.__window.blit(object.getImage(), object.getPosition())
 
         pygame.display.update()
+
+    def __startUp(self):
+        object = Objects.Renderable()
+        object.loadImage("../imgs/circle.png")
+        object.setPosition(0, 0)
+        self.__renderables.append(object)
+        self.__clickables.append(object)
