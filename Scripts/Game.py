@@ -36,6 +36,19 @@ class Game:
 
         self.__clickables.append(object)
 
+        shovel = Objects.Renderable()
+        shovel.loadImage("../imgs/shovel.png")
+
+        dirtWithShovel = Objects.Renderable()
+        dirtWithShovel.loadImage("../imgs/dirtWithShovel.png")
+        dirtWithShovel.setPosition(500, 0)
+        self.__renderables.append(dirtWithShovel)
+        self.__clickables.append(dirtWithShovel)
+
+        dirt = Objects.Renderable()
+        dirt.loadImage("../imgs/dirt.png")
+        dirt.setPosition(500, 0)
+
     # Add a sprite to be rendered
     def addSprite(self, sprite):
         if sprite not in self.__renderables:
@@ -71,6 +84,10 @@ class Game:
 
             for sp in clicked_sprites:
                 print("The following sprite was clicked: %s"%sp)
+
+            # if dirtAndShovel is clicked:
+            #     self.__renderables.remove(dirtWithShovel)
+
 
     # Game loop
     def __gameLoop(self):

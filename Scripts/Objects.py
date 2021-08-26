@@ -31,6 +31,8 @@ class Renderable(pygame.sprite.Sprite):
     def setPosition(self, x, y):
         self.__x = x
         self.__y = y
+        self.rect.x = x
+        self.rect.y = y
 
     # Return the player's position
     def getPosition(self):
