@@ -58,6 +58,6 @@ class Game:
         self.__window.fill((255, 255, 0))
 
         for object in self.__renderables:
-            self.__window.blit(object.image(), object.position())
+            self.__window.blit(object.image(), object.getPosition())
 
         pygame.display.update()
