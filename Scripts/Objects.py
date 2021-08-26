@@ -1,4 +1,5 @@
 import pygame
+import pygame.sprite
 
 
 class Object:
@@ -7,20 +8,24 @@ class Object:
 
 
 # Class for renderable objects
-class Renderable(Object):
+class Renderable(pygame.sprite.Sprite):
     def __init__(self):
-        Object.__init__(self)
+        pygame.sprite.Sprite.__init__(self)
+
         self.__x = 0
         self.__y = 0
-        self.__image = None
+        
+        self.image = None
+        self.rect = None
 
     # Load the player image
     def loadImage(self, path):
-        self.__image = pygame.image.load(path)
+        self.image = pygame.image.load(path)
+        self.rect = self.image.get_rect()
 
     # Return the player image
-    def image(self):
-        return self.__image
+    def getImage(self):
+        return self.image
 
     # Set the player's position
     def setPosition(self, x, y):
@@ -32,10 +37,10 @@ class Renderable(Object):
         return self.__x, self.__y
 
     def move(self, xDif, yDif):
-        newX, newY = self.__getPosition()
+        newX, newY = self.getPosition()
         newX += xDif
         newY += yDif
-        self.__setPosition(newX, newY)
+        self.setPosition(newX, newY)
 
 
 # Class for non-renderable objects

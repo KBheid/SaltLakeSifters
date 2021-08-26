@@ -27,10 +27,24 @@ class Game:
 
         # Initialize the renderable objects queue
         self.__renderables = []
+        self.__clickables = []
+
         object = Objects.Renderable()
         object.loadImage("../imgs/circle.png")
         object.setPosition(0, 0)
         self.__renderables.append(object)
+
+        self.__clickables.append(object)
+
+    # Add a sprite to be rendered
+    def addSprite(self, sprite):
+        if sprite not in self.__renderables:
+            self.__renderables.append(sprite)
+
+    # Add a sprite to be clickable
+    def addClickableSprite(self, sprite):
+        if sprite not in self.__clickables:
+            self.__clickables.append(sprite)
 
     # Main loop
     def mainLoop(self):
@@ -48,6 +62,16 @@ class Game:
         if self.__controls.quitPressed:
             self.__running = False
 
+        # Handle clicks, set renderables to clicked
+        if self.__controls.leftClickPressed:
+            pos = pygame.mouse.get_pos()
+
+            # Get all sprites that rects intersect with the mouse position
+            clicked_sprites = [s for s in self.__clickables if s.rect.collidepoint(pos)]
+
+            for sp in clicked_sprites:
+                print("The following sprite was clicked: %s"%sp)
+
     # Game loop
     def __gameLoop(self):
         if self.__controls.spaceKeyPressed:
@@ -58,6 +82,6 @@ class Game:
         self.__window.fill((255, 255, 0))
 
         for object in self.__renderables:
-            self.__window.blit(object.image(), object.getPosition())
+            self.__window.blit(object.getImage(), object.getPosition())
 
         pygame.display.update()

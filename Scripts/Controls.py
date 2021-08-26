@@ -8,6 +8,8 @@ class Controls:
         self.spaceKeyPressed = False
         self.quitPressed = False
 
+        self.leftClickPressed = False
+
     def update(self):
         # Reset from last update
         self._reset()
@@ -21,8 +23,14 @@ class Controls:
                 self.spaceKeyPressed = event.key == pygame.K_SPACE or self.spaceKeyPressed
                 self.quitPressed = event.key == pygame.K_ESCAPE or self.quitPressed
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.leftClickPressed = True
+                print("key press")
+
     def _reset(self):
         self.leftKeyPressed = False
         self.rightKeyPressed = False
         self.spaceKeyPressed = False
         self.quitPressed = False
+
+        self.leftClickPressed = False
