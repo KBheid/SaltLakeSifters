@@ -1,6 +1,5 @@
 # import the pygame module, so you can use it
 import Game
-import pygame.sprite
 
 
 def main():
