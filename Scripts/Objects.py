@@ -16,13 +16,13 @@ class Renderable(pygame.sprite.Sprite):
         self.__y = 0
         
         self.image = None
-        self.rect = None
+        #self.rect = None
         self.name = None
 
     # Load the player image
     def loadImage(self, path):
         self.image = pygame.image.load(path)
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect(topleft = (self.__x, self.__y))
 
     # Return the player image
     def getImage(self):
@@ -32,8 +32,7 @@ class Renderable(pygame.sprite.Sprite):
     def setPosition(self, x, y):
         self.__x = x
         self.__y = y
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.topleft = (self.__x, self.__y)
 
     # Return the player's position
     def getPosition(self):
