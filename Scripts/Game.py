@@ -32,7 +32,8 @@ class Game:
 
         self.__startUp()
 
-        self.__shovelFlag = False
+        self.__digging = False
+        self.__sieving = False
 
     # Add a sprite to be rendered
     def addSprite(self, sprite):
@@ -72,16 +73,32 @@ class Game:
             for sp in clicked_sprites:
                 print("The following sprite was clicked: %s" % sp)
 
-            if self.rawDirt.rect.collidepoint(pos):
-                    print("HEYYYYYYY")
-                    self.rawDirt.loadImage("../imgs/dirt.png")
-                    self.__shovelFlag = True
+            if self.rawDirt.rect.collidepoint(pos) and not self.__sieving:
+                self.rawDirt.loadImage("../imgs/rawDirt.png")
+                self.__digging = True
 
-        if self.__shovelFlag:
-            shovel = Objects.Renderable()
-            shovel.loadImage("../imgs/shovel.png")
+            if self.sieve.rect.collidepoint(pos):
+
+                # dirt placed on sieve
+                if self.__sieving:
+                    self.__renderables.remove(self.dirt)
+                    self.__sieving = False
+
+                # rawDirt clicked
+                if self.__digging:
+                    self.dirt = Objects.Renderable()
+                    self.dirt.loadImage("../imgs/dirt.png")
+                    sievePos = self.sieve.getPosition()
+                    self.dirt.setPosition(sievePos[0], sievePos[1])
+                    self.__renderables.append(self.dirt)
+                    self.__digging = False
+                    self.__sieving = True
+
+        if self.__digging:
+            self.shovel = Objects.Renderable()
+            self.shovel.loadImage("../imgs/shovel.png")
             pos = pygame.mouse.get_pos()
-            shovel.setPosition(pos[0], pos[1])
+            self.shovel.setPosition(pos[0], pos[1])
         else:
             self.rawDirt.loadImage("../imgs/dirtWithShovel.png")
 
@@ -98,17 +115,20 @@ class Game:
         for object in self.__renderables:
             self.__window.blit(object.getImage(), object.getPosition())
 
+        if self.__digging:
+            self.__window.blit(self.shovel.getImage(), self.shovel.getPosition())
+
         pygame.display.update()
 
     def __startUp(self):
-        object = Objects.Renderable()
-        object.loadImage("../imgs/circle.png")
-        object.setPosition(0, 0)
-        self.__renderables.append(object)
-        self.__clickables.append(object)
+        self.sieve = Objects.Renderable()
+        self.sieve.loadImage("../imgs/circle.png")
+        self.sieve.setPosition(0, 0)
+        self.__renderables.append(self.sieve)
+        self.__clickables.append(self.sieve)
 
         self.rawDirt = Objects.Renderable()
         self.rawDirt.loadImage("../imgs/dirtWithShovel.png")
         self.rawDirt.setPosition(500, 0)
-        # self.name = 'rawDirt'
+        self.__digging = False
         self.__renderables.append(self.rawDirt)
