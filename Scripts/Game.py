@@ -6,6 +6,7 @@ import Objects
 
 # TODO: This should be a singleton class
 class Game:
+
     # Constructor
     def __init__(self):
         # Initialize the pygame
@@ -31,18 +32,7 @@ class Game:
 
         self.__startUp()
 
-        shovel = Objects.Renderable()
-        shovel.loadImage("../imgs/shovel.png")
-
-        dirtWithShovel = Objects.Renderable()
-        dirtWithShovel.loadImage("../imgs/dirtWithShovel.png")
-        dirtWithShovel.setPosition(500, 0)
-        self.__renderables.append(dirtWithShovel)
-        self.__clickables.append(dirtWithShovel)
-
-        dirt = Objects.Renderable()
-        dirt.loadImage("../imgs/dirt.png")
-        dirt.setPosition(500, 0)
+        self.__shovelFlag = False
 
     # Add a sprite to be rendered
     def addSprite(self, sprite):
@@ -70,7 +60,9 @@ class Game:
         if self.__controls.quitPressed:
             self.__running = False
 
+
         # Handle clicks, set renderables to clicked
+        # is the clickables cleared every frame?
         if self.__controls.leftClickPressed:
             pos = pygame.mouse.get_pos()
 
@@ -78,10 +70,20 @@ class Game:
             clicked_sprites = [s for s in self.__clickables if s.rect.collidepoint(pos)]
 
             for sp in clicked_sprites:
-                print("The following sprite was clicked: %s"%sp)
+                print("The following sprite was clicked: %s" % sp)
 
-            # if dirtAndShovel is clicked:
-            #     self.__renderables.remove(dirtWithShovel)
+            if self.rawDirt.rect.collidepoint(pos):
+                    print("HEYYYYYYY")
+                    self.rawDirt.loadImage("../imgs/dirt.png")
+                    self.__shovelFlag = True
+
+        if self.__shovelFlag:
+            shovel = Objects.Renderable()
+            shovel.loadImage("../imgs/shovel.png")
+            pos = pygame.mouse.get_pos()
+            shovel.setPosition(pos[0], pos[1])
+        else:
+            self.rawDirt.loadImage("../imgs/dirtWithShovel.png")
 
 
     # Game loop
@@ -104,3 +106,9 @@ class Game:
         object.setPosition(0, 0)
         self.__renderables.append(object)
         self.__clickables.append(object)
+
+        self.rawDirt = Objects.Renderable()
+        self.rawDirt.loadImage("../imgs/dirtWithShovel.png")
+        self.rawDirt.setPosition(500, 0)
+        # self.name = 'rawDirt'
+        self.__renderables.append(self.rawDirt)

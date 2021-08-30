@@ -17,6 +17,7 @@ class Renderable(pygame.sprite.Sprite):
         
         self.image = None
         self.rect = None
+        self.name = None
 
     # Load the player image
     def loadImage(self, path):
