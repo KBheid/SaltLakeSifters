@@ -105,70 +105,65 @@ class Game:
             clicked_sprites = [s for s in self.__clickables if s.rect.collidepoint(pos)]
 
             for sp in clicked_sprites:
-                pass
+                if sp is self.shovel and not self.__digging:
+                    self.__digging = True
 
-            if self.shovel.rect.collidepoint(pos) and not self.__digging:
-                self.__digging = True
+                if sp is self.rawDirt and self.__digging:
+                    self.__dirtOnShovel = True
 
-            if self.rawDirt.rect.collidepoint(pos) and self.__digging:
-                self.__dirtOnShovel = True
+                if sp is self.sifter and not self.__picking:
+                    # dirt placed on sieve, sieve it off
+                    if not self.__digging and self.__dirtCount > 0:
+                        # TODO. click several times with the dirt decreasing
+                        if self.__dirtCount == 3:
+                            self.__renderables.remove(self.sifter.dirtL)
+                        elif self.__dirtCount == 2:
+                            self.__renderables.remove(self.sifter.dirtM)
+                        elif self.__dirtCount == 1:
+                            self.__renderables.remove(self.sifter.dirtS)
+                        self.__dirtCount -= 1
 
+                        # get random stuff
+                        # 10% nothing 50% trash 40% gem 0,12345,6789
+                        # TODO. different probability of finding different gems
+                        # Yes, I know the code is crappy af
+                        rand = random.randint(0, 9)
+                        if rand == 0:
+                            pass
+                        elif rand < 6:
+                            self.trash = Trash.Trash()
+                            self.__renderables.append(self.trash)
 
+                            sievePos = self.sifter.getPosition()
+                            self.trash.setPosition(sievePos[0] + 10, sievePos[1] + 10)
 
-            if self.sifter.rect.collidepoint(pos) and self.__picking == False:
+                            self.gem = None
+                            self.__picking = True
+                        else:
+                            # Create new gem
+                            self.gem = Gem.Gem()
+                            self.__renderables.append(self.gem)
 
-                # dirt placed on sieve, sieve it off
-                if self.__digging == False and self.__dirtCount > 0:
-                    # TODO. click several times with the dirt decreasing
-                    if self.__dirtCount == 3 and self.__picking == False:
-                        self.__renderables.remove(self.sifter.dirtL)
-                    elif self.__dirtCount == 2 and self.__picking == False:
-                        self.__renderables.remove(self.sifter.dirtM)
-                    elif self.__dirtCount == 1 and self.__picking == False:
-                        self.__renderables.remove(self.sifter.dirtS)
-                    self.__dirtCount -= 1
+                            sievePos = self.sifter.getPosition()
+                            self.gem.setPosition(sievePos[0] + 10, sievePos[1] + 10)
 
-                    # get random stuff
-                    # 10% nothing 50% trash 40% gem 0,12345,6789
-                    # TODO. different probability of finding different gems
-                    # Yes, I know the code is crappy af
-                    rand = random.randint(0, 9)
-                    if rand == 0:
-                        pass
-                    elif rand < 6:
-                        self.trash = Trash.Trash()
-                        self.__renderables.append(self.trash)
+                            self.trash = None
+                            self.__picking = True
 
-                        sievePos = self.sifter.getPosition()
-                        self.trash.setPosition(sievePos[0] + 10, sievePos[1] + 10)
-                        
-                        self.gem = None
-                        self.__picking = True
+                    # rawDirt clicked
+                    if self.__digging and self.__dirtOnShovel:
+                        if self.__dirtCount == 0:
+                            self.__renderables.append(self.sifter.dirtS)
+                            self.__dirtCount += 1
+                        elif self.__dirtCount == 1:
+                            self.__renderables.append(self.sifter.dirtM)
+                            self.__dirtCount += 1
+                        elif self.__dirtCount == 2:
+                            self.__renderables.append(self.sifter.dirtL)
+                            self.__dirtCount += 1
+                        self.__dirtOnShovel = False
                     else:
-                        # Create new gem
-                        self.gem = Gem.Gem()
-                        self.__renderables.append(self.gem)
-
-                        sievePos = self.sifter.getPosition()
-                        self.gem.setPosition(sievePos[0] + 10, sievePos[1] + 10)
-
-                        self.trash = None
-                        self.__picking = True
-
-                # rawDirt clicked
-                if self.__digging and self.__dirtOnShovel:
-                    if self.__dirtCount == 0:
-                        self.__renderables.append(self.sifter.dirtS)
-                        self.__dirtCount += 1
-                    elif self.__dirtCount == 1:
-                        self.__renderables.append(self.sifter.dirtM)
-                        self.__dirtCount += 1
-                    elif self.__dirtCount == 2:
-                        self.__renderables.append(self.sifter.dirtL)
-                        self.__dirtCount += 1
-                    self.__dirtOnShovel = False
-                else:
-                    self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
+                        self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
 
         self.shakeSifter()
 
