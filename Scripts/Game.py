@@ -35,6 +35,7 @@ class Game:
 
         self.__digging = False
         self.__sieving = False
+        self.__picking = False
         self.__shakeSieveCount = 0
 
     # Add a sprite to be rendered
@@ -92,13 +93,51 @@ class Game:
                 self.rawDirt.loadImage("../imgs/rawDirt.png")
                 self.__digging = True
 
+            if self.trash is not None and self.trash.rect.collidepoint(pos) and self.__picking:
+                self.__picking = False
+                self.__renderables.remove(self.trash)
+                self.trash = None
+
+            if self.gem is not None and self.gem.rect.collidepoint(pos) and self.__picking:
+                self.__picking = False
+                self.__renderables.remove(self.gem)
+                self.gem = None
+
             if self.sieve.rect.collidepoint(pos):
 
-                # dirt placed on sieve
+                # dirt placed on sieve, sieve it off
                 if self.__sieving:
                     # TODO. click several times with the dirt decreasing
                     self.__renderables.remove(self.dirt)
                     self.__sieving = False
+
+                    # get random stuff
+                    # 10% nothing 50% trash 40% gem 0,12345,6789
+                    # TODO. different probability of finding different gems
+                    # Yes, I know the code is crappy af
+                    rand = random.randint(0, 9)
+                    if rand == 0:
+                        pass
+                    elif rand < 6:
+                        trashNum = random.randint(1, 5)
+                        self.trash = Objects.Renderable()
+                        filename = "../imgs/Art imgs/Trash/trash" + str(trashNum) + ".png"
+                        self.trash.loadImage(filename)
+                        sievePos = self.sieve.getPosition()
+                        self.trash.setPosition(sievePos[0] + 10, sievePos[1] + 10)
+                        self.__renderables.append(self.trash)
+                        self.gem = None
+                        self.__picking = True
+                    else:
+                        gemNum = random.randint(1, 5)
+                        self.gem = Objects.Renderable()
+                        filename = "../imgs/Art imgs/Gems/gem" + str(gemNum) + ".png"
+                        self.gem.loadImage(filename)
+                        sievePos = self.sieve.getPosition()
+                        self.gem.setPosition(sievePos[0] + 10, sievePos[1] + 10)
+                        self.__renderables.append(self.gem)
+                        self.trash = None
+                        self.__picking = True
 
                 # rawDirt clicked
                 if self.__digging:
@@ -152,3 +191,6 @@ class Game:
         self.rawDirt.setPosition(500, 0)
         self.__digging = False
         self.__renderables.append(self.rawDirt)
+
+        self.trash = None
+        self.gem = None
