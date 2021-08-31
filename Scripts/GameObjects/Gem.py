@@ -24,7 +24,7 @@ class Gem(Objects.Renderable):
     def __init__(self):
         Objects.Renderable.__init__(self)
 
-        gemNum = self.getRandomGemNum()
-        filename = "../imgs/Art imgs/Gems/gem" + str(gemNum) + ".png"
+        self.id = self.getRandomGemNum()
+        filename = "../imgs/Art imgs/Gems/gem" + str(self.id) + ".png"
         self.loadImage(filename)
 

@@ -13,18 +13,18 @@ class Sifter(Objects.Renderable):
 
         self.dirtS = Objects.Renderable()
         self.dirtS.loadImage("../imgs/Art imgs/Dirt_s.PNG")
-        self.dirtS.image = pygame.transform.scale(self.dirtS.image, (400, 400))
-        self.dirtS.setPosition(440, 184)
+        self.dirtS.image = pygame.transform.scale(self.dirtS.image, (600, 600))
+        self.dirtS.setPosition(340, 85)
 
         self.dirtM = Objects.Renderable()
         self.dirtM.loadImage("../imgs/Art imgs/Dirt_m.PNG")
-        self.dirtM.image = pygame.transform.scale(self.dirtM.image, (400, 400))
-        self.dirtM.setPosition(440, 184)
+        self.dirtM.image = pygame.transform.scale(self.dirtM.image, (600, 600))
+        self.dirtM.setPosition(340, 85)
 
         self.dirtL = Objects.Renderable()
         self.dirtL.loadImage("../imgs/Art imgs/Dirt_l.PNG")
-        self.dirtL.image = pygame.transform.scale(self.dirtL.image, (400, 400))
-        self.dirtL.setPosition(440, 184)
+        self.dirtL.image = pygame.transform.scale(self.dirtL.image, (600, 600))
+        self.dirtL.setPosition(340, 85)
 
 
         self.loadImage("../imgs/Art imgs/Sifter.png")
