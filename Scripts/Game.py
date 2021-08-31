@@ -3,6 +3,8 @@ import sys
 import Controls
 import Objects
 import random
+import GameObjects.Sifter
+import GameObjects.GemGrid
 
 
 # TODO: This should be a singleton class
@@ -14,7 +16,7 @@ class Game:
         pygame.init()
 
         # Create window and set window properties
-        self.__size = 800, 600
+        self.__size = 1280, 768
         self.__title = "Salt Lake Sifters"
         # TODO: Load the window icon
         self.__window = pygame.display.set_mode(self.__size)
@@ -31,12 +33,15 @@ class Game:
         self.__renderables = []
         self.__clickables = []
 
-        self.__startUp()
-
         self.__digging = False
+        self.__dirtOnShovel = False
         self.__sieving = False
         self.__picking = False
+        self.__picked = False
         self.__shakeSieveCount = 0
+        self.__dirtCount = 0
+
+        self.__startUp()
 
     # Add a sprite to be rendered
     def addSprite(self, sprite):
@@ -48,14 +53,14 @@ class Game:
         if sprite not in self.__clickables:
             self.__clickables.append(sprite)
 
-    def shakeSieve(self):
+    def shakeSifter(self):
         if self.__shakeSieveCount <= 0:
             return
 
-        pos = self.sieve.getPosition()
+        pos = self.sifter.getPosition()
         bia = 20
         bia = -bia if ( self.__shakeSieveCount % 2 == 0 ) else bia
-        self.sieve.setPosition(pos[0] + bia, pos[1])
+        self.sifter.setPosition(pos[0] + bia, pos[1])
         self.__shakeSieveCount -= 1
         # could reveal the gems in 9 shakes
         #if
@@ -89,27 +94,27 @@ class Game:
             for sp in clicked_sprites:
                 print("The following sprite was clicked: %s" % sp)
 
-            if self.rawDirt.rect.collidepoint(pos) and not self.__sieving:
-                self.rawDirt.loadImage("../imgs/rawDirt.png")
+            if self.shovel.rect.collidepoint(pos) and not self.__digging:
                 self.__digging = True
+                self.__renderables.remove(self.shovel)
 
-            if self.trash is not None and self.trash.rect.collidepoint(pos) and self.__picking:
-                self.__picking = False
-                self.__renderables.remove(self.trash)
-                self.trash = None
+            if self.rawDirt.rect.collidepoint(pos) and self.__digging and not self.__dirtOnShovel:
+                self.__dirtOnShovel = True
 
-            if self.gem is not None and self.gem.rect.collidepoint(pos) and self.__picking:
-                self.__picking = False
-                self.__renderables.remove(self.gem)
-                self.gem = None
 
-            if self.sieve.rect.collidepoint(pos):
+
+            if self.sifter.rect.collidepoint(pos) and self.__picking == False:
 
                 # dirt placed on sieve, sieve it off
-                if self.__sieving:
+                if self.__digging == False and self.__dirtCount > 0:
                     # TODO. click several times with the dirt decreasing
-                    self.__renderables.remove(self.dirt)
-                    self.__sieving = False
+                    if self.__dirtCount == 3 and self.__picking == False:
+                        self.__renderables.remove(self.sifter.dirtL)
+                    elif self.__dirtCount == 2 and self.__picking == False:
+                        self.__renderables.remove(self.sifter.dirtM)
+                    elif self.__dirtCount == 1 and self.__picking == False:
+                        self.__renderables.remove(self.sifter.dirtS)
+                    self.__dirtCount -= 1
 
                     # get random stuff
                     # 10% nothing 50% trash 40% gem 0,12345,6789
@@ -123,7 +128,7 @@ class Game:
                         self.trash = Objects.Renderable()
                         filename = "../imgs/Art imgs/Trash/trash" + str(trashNum) + ".png"
                         self.trash.loadImage(filename)
-                        sievePos = self.sieve.getPosition()
+                        sievePos = self.sifter.getPosition()
                         self.trash.setPosition(sievePos[0] + 10, sievePos[1] + 10)
                         self.__renderables.append(self.trash)
                         self.gem = None
@@ -133,33 +138,64 @@ class Game:
                         self.gem = Objects.Renderable()
                         filename = "../imgs/Art imgs/Gems/gem" + str(gemNum) + ".png"
                         self.gem.loadImage(filename)
-                        sievePos = self.sieve.getPosition()
+                        sievePos = self.sifter.getPosition()
                         self.gem.setPosition(sievePos[0] + 10, sievePos[1] + 10)
                         self.__renderables.append(self.gem)
                         self.trash = None
                         self.__picking = True
 
                 # rawDirt clicked
-                if self.__digging:
-                    self.dirt = Objects.Renderable()
-                    self.dirt.loadImage("../imgs/dirt.png")
-                    sievePos = self.sieve.getPosition()
-                    self.dirt.setPosition(sievePos[0], sievePos[1])
-                    self.__renderables.append(self.dirt)
-                    self.__digging = False
-                    self.__sieving = True
+                if self.__digging and self.__dirtOnShovel:
+                    if self.__dirtCount == 0:
+                        self.__renderables.append(self.sifter.dirtS)
+                        self.__dirtCount += 1
+                    elif self.__dirtCount == 1:
+                        self.__renderables.append(self.sifter.dirtM)
+                        self.__dirtCount += 1
+                    elif self.__dirtCount == 2:
+                        self.__renderables.append(self.sifter.dirtL)
+                        self.__dirtCount += 1
+                    self.__dirtOnShovel = False
                 else:
                     self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
 
-        self.shakeSieve()
+        if self.__controls.rightClickPressed:
+            if self.__digging:
+                self.__digging = False
+                self.__dirtOnShovel = False
+                self.shovel.setPosition(1040, 80)
+                self.__renderables.append(self.shovel)
+
+        if self.__controls.spaceKeyPressed:
+            if self.trash is not None and self.__picking:
+                self.__picking = False
+                self.__renderables.remove(self.trash)
+                self.trash = None
+
+            if self.gem is not None and self.__picking:
+                self.__picking = False
+                self.__renderables.remove(self.gem)
+                gem = self.gem
+                self.gem = None
+
+                self.gemGrid.addGem()
+                gem.image = gem.image.convert_alpha()
+                gem.image = pygame.transform.scale(gem.image, (100, 100))
+                pos = self.gemGrid.getPosition()
+                count = self.gemGrid.count
+                row = int((count - 1) / 2)
+                column = int((count - 1) % 2)
+                gem.setPosition(pos[0] + ((column + 1) * 100), pos[1] + ((row + 1) * 100))
+                self.__renderables.append(gem)
+
+
+        self.shakeSifter()
 
         if self.__digging:
             self.shovel = Objects.Renderable()
             self.shovel.loadImage("../imgs/shovel.png")
             pos = pygame.mouse.get_pos()
-            self.shovel.setPosition(pos[0], pos[1])
-        else:
-            self.rawDirt.loadImage("../imgs/dirtWithShovel.png")
+            self.shovel.setPosition(pos[0] - 67, pos[1] - 112)
 
 
     # Game loop
@@ -180,17 +216,26 @@ class Game:
         pygame.display.update()
 
     def __startUp(self):
-        self.sieve = Objects.Renderable()
-        self.sieve.loadImage("../imgs/circle.png")
-        self.sieve.setPosition(0, 0)
-        self.__renderables.append(self.sieve)
-        self.__clickables.append(self.sieve)
+        self.sifter = GameObjects.Sifter.Sifter()
+        self.__renderables.append(self.sifter)
+        self.__clickables.append(self.sifter)
+
+        self.gemGrid = GameObjects.GemGrid.GemGrid()
+        self.__renderables.append(self.gemGrid)
+        self.__clickables.append(self.gemGrid)
 
         self.rawDirt = Objects.Renderable()
-        self.rawDirt.loadImage("../imgs/dirtWithShovel.png")
-        self.rawDirt.setPosition(500, 0)
+        self.rawDirt.loadImage("../imgs/rawDirt.png")
+        self.rawDirt.setPosition(940, 504)
         self.__digging = False
         self.__renderables.append(self.rawDirt)
+        self.__clickables.append(self.rawDirt)
+
+        self.shovel = Objects.Renderable()
+        self.shovel.loadImage("../imgs/shovel.png")
+        self.shovel.setPosition(1040, 80)
+        self.__renderables.append(self.shovel)
+        self.__clickables.append(self.shovel)
 
         self.trash = None
         self.gem = None

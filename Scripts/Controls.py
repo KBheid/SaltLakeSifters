@@ -9,6 +9,7 @@ class Controls:
         self.quitPressed = False
 
         self.leftClickPressed = False
+        self.rightClickPressed = False
 
     def update(self):
         # Reset from last update
@@ -24,7 +25,11 @@ class Controls:
                 self.quitPressed = event.key == pygame.K_ESCAPE or self.quitPressed
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                self.leftClickPressed = True
+                if event.button == 1:
+                    self.leftClickPressed = True
+                if event.button == 3:
+                    self.rightClickPressed = True
+
 
     def _reset(self):
         self.leftKeyPressed = False
@@ -33,3 +38,4 @@ class Controls:
         self.quitPressed = False
 
         self.leftClickPressed = False
+        self.rightClickPressed = False

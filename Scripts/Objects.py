@@ -38,6 +38,9 @@ class Renderable(pygame.sprite.Sprite):
     def getPosition(self):
         return self.__x, self.__y
 
+    def getRect(self):
+        return self.rect
+
     def move(self, xDif, yDif):
         newX, newY = self.getPosition()
         newX += xDif
