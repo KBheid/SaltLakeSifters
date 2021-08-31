@@ -103,12 +103,6 @@ class Game:
             clicked_sprites = [s for s in self.__clickables if s.rect.collidepoint(pos)]
 
             for sp in clicked_sprites:
-                if sp is self.shovel and not self.__digging:
-                    self.__digging = True
-
-                if sp is self.rawDirt and self.__digging:
-                    self.__dirtOnShovel = True
-
                 if sp is self.sifter and not self.__picking:
                     # If we do not have the shovel and there is dirt, shake the sifter
                     if not self.__digging and self.sifter.hasDirt():
@@ -138,26 +132,36 @@ class Game:
                             self.trash = None
                             self.__picking = True
 
-                    # If we do have the shovel and it has dirt in it, place dirt in sifter
-                    if self.__digging and self.__dirtOnShovel:
-                        self.sifter.addDirt(1)
-                        self.__dirtOnShovel = False
-
                     # If we don't have the shovel, shake the sifter
                     else:
                         self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
 
+                if sp is self.shovel:
+                    self.__digging = True
+
+        # If the player was digging and is no longer holding left click, they are no longer digging
+        if self.__digging and not self.__controls.leftClickHeld:
+            self.__digging = False
+            self.__dirtOnShovel = False
+            self.shovel.setPosition(1040, 80)
+
+        # HANDLE MOTION WITHOUT CLICKING
+        pos = pygame.mouse.get_pos()
+        if self.sifter.rect.collidepoint(pos) and self.__digging and self.__dirtOnShovel:
+            self.sifter.addDirt(1)
+            self.__dirtOnShovel = False
+
+        if self.rawDirt.rect.collidepoint(pos[0], pos[1]+50) and self.__digging:
+            self.__dirtOnShovel = True
+
+
+        # Update shovel position to match mouse if digging
         if self.__digging:
             pos = pygame.mouse.get_pos()
             self.shovel.setPosition(pos[0] - 67, pos[1] - 112)
 
     # Game loop
     def __gameLoop(self):
-        if self.__controls.rightClickPressed:
-            if self.__digging:
-                self.__digging = False
-                self.__dirtOnShovel = False
-                self.shovel.setPosition(1040, 80)
 
         if self.__controls.spaceKeyPressed:
             if self.trash is not None and self.__picking:
