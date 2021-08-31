@@ -68,9 +68,6 @@ class Game:
         bia = -bia if ( self.__shakeSieveCount % 2 == 0 ) else bia
         self.sifter.setPosition(pos[0] + bia, pos[1])
         self.__shakeSieveCount -= 1
-        # could reveal the gems in 9 shakes
-        #if
-
 
     # Main loop
     def mainLoop(self):
