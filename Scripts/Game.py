@@ -193,7 +193,7 @@ class Game:
 
         if self.__digging:
             self.shovel = Objects.Renderable()
-            self.shovel.loadImage("../imgs/shovel.png")
+            self.shovel.loadImage("../imgs/tmp/shovel.png")
             pos = pygame.mouse.get_pos()
             self.shovel.setPosition(pos[0] - 67, pos[1] - 112)
 
