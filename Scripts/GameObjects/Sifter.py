@@ -11,15 +11,18 @@ class Sifter(Objects.Renderable):
         self.__dirtCount = 3
 
         self.dirtS = Objects.Renderable()
-        self.dirtS.loadImage("../imgs/dirt_s.png")
+        self.dirtS.loadImage("../imgs/Art imgs/Dirt_s.PNG")
+        self.dirtS.image = pygame.transform.scale(self.dirtS.image, (400, 400))
         self.dirtS.setPosition(440, 184)
 
         self.dirtM = Objects.Renderable()
-        self.dirtM.loadImage("../imgs/dirt_m.png")
+        self.dirtM.loadImage("../imgs/Art imgs/Dirt_m.PNG")
+        self.dirtM.image = pygame.transform.scale(self.dirtM.image, (400, 400))
         self.dirtM.setPosition(440, 184)
 
         self.dirtL = Objects.Renderable()
-        self.dirtL.loadImage("../imgs/dirt_l.png")
+        self.dirtL.loadImage("../imgs/Art imgs/Dirt_l.PNG")
+        self.dirtL.image = pygame.transform.scale(self.dirtL.image, (400, 400))
         self.dirtL.setPosition(440, 184)
 
 
