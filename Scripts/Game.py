@@ -170,7 +170,8 @@ class Game:
                 gem = self.gem
                 self.gem = None
 
-                self.gemGrid.addGem(gem)
+                if not self.gemGrid.addGem(gem):
+                    self.__renderables.remove(gem)
 
         # If it needs to be shaken, shake it
         self.shakeSifter()
