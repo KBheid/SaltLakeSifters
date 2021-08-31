@@ -8,7 +8,8 @@ class Sifter(Objects.Renderable):
 
         # Set member variables
         self.__lastDirtCount = 0
-        self.__dirtCount = 3
+        self.__dirtCount = 0
+        self.dirt = None
 
         self.dirtS = Objects.Renderable()
         self.dirtS.loadImage("../imgs/Art imgs/Dirt_s.PNG")
@@ -63,11 +64,19 @@ class Sifter(Objects.Renderable):
             self.__dirtCount = 0
             return
 
-        # TODO: Create gems
-
         self.__updateImage()
+
+    def hasDirt(self):
+        return self.__dirtCount > 0
 
     def __updateImage(self):
         # Load new image only if dirtCount has changed
         if not self.__lastDirtCount == self.__dirtCount:
-            self.loadImage("../imgs/tmp/sieve%d.png" % self.__dirtCount)
+            if self.__dirtCount == 0:
+                self.dirt = None
+            if self.__dirtCount == 1:
+                self.dirt = self.dirtS
+            if self.__dirtCount == 2:
+                self.dirt = self.dirtM
+            if self.__dirtCount == 3:
+                self.dirt = self.dirtL

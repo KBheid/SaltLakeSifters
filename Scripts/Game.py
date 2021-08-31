@@ -113,15 +113,8 @@ class Game:
 
                 if sp is self.sifter and not self.__picking:
                     # dirt placed on sieve, sieve it off
-                    if not self.__digging and self.__dirtCount > 0:
-                        # TODO. click several times with the dirt decreasing
-                        if self.__dirtCount == 3:
-                            self.__renderables.remove(self.sifter.dirtL)
-                        elif self.__dirtCount == 2:
-                            self.__renderables.remove(self.sifter.dirtM)
-                        elif self.__dirtCount == 1:
-                            self.__renderables.remove(self.sifter.dirtS)
-                        self.__dirtCount -= 1
+                    if not self.__digging and self.sifter.hasDirt():
+                        self.sifter.sift(1)
 
                         # get random stuff
                         # 10% nothing 50% trash 40% gem 0,12345,6789
@@ -150,17 +143,8 @@ class Game:
                             self.trash = None
                             self.__picking = True
 
-                    # rawDirt clicked
                     if self.__digging and self.__dirtOnShovel:
-                        if self.__dirtCount == 0:
-                            self.__renderables.append(self.sifter.dirtS)
-                            self.__dirtCount += 1
-                        elif self.__dirtCount == 1:
-                            self.__renderables.append(self.sifter.dirtM)
-                            self.__dirtCount += 1
-                        elif self.__dirtCount == 2:
-                            self.__renderables.append(self.sifter.dirtL)
-                            self.__dirtCount += 1
+                        self.sifter.addDirt(1)
                         self.__dirtOnShovel = False
                     else:
                         self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
@@ -198,6 +182,9 @@ class Game:
 
         for object in self.__renderables:
             self.__window.blit(object.getImage(), object.getPosition())
+
+        if self.sifter.dirt is not None:
+            self.__window.blit(self.sifter.dirt.getImage(), self.sifter.dirt.getPosition())
 
         pygame.display.update()
 
