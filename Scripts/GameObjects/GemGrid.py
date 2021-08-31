@@ -13,6 +13,14 @@ class GemGrid(Objects.Renderable):
 
         self.setPosition(20, 84)
 
-    def addGem(self):
+    def addGem(self, gem):
         # TODO: Use id to determine which gem to add
         self.count += 1
+
+        gem.image = gem.image.convert_alpha()
+        gem.image = pygame.transform.scale(gem.image, (100, 100))
+        pos = self.getPosition()
+        count = self.count
+        row = int((count - 1) / 2)
+        column = int((count - 1) % 2)
+        gem.setPosition(pos[0] + ((column + 1) * 100) - 50, pos[1] + ((row + 1) * 100) - 50)

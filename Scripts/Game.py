@@ -191,19 +191,10 @@ class Game:
 
             if self.gem is not None and self.__picking:
                 self.__picking = False
-                self.__renderables.remove(self.gem)
                 gem = self.gem
                 self.gem = None
 
-                self.gemGrid.addGem()
-                gem.image = gem.image.convert_alpha()
-                gem.image = pygame.transform.scale(gem.image, (100, 100))
-                pos = self.gemGrid.getPosition()
-                count = self.gemGrid.count
-                row = int((count - 1) / 2)
-                column = int((count - 1) % 2)
-                gem.setPosition(pos[0] + ((column + 1) * 100) - 50, pos[1] + ((row + 1) * 100) - 50)
-                self.__renderables.append(gem)
+                self.gemGrid.addGem(gem)
 
 
         self.shakeSifter()
