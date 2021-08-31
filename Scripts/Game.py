@@ -112,9 +112,8 @@ class Game:
 
             if self.shovel.rect.collidepoint(pos) and not self.__digging:
                 self.__digging = True
-                self.__renderables.remove(self.shovel)
 
-            if self.rawDirt.rect.collidepoint(pos) and self.__digging and not self.__dirtOnShovel:
+            if self.rawDirt.rect.collidepoint(pos) and self.__digging:
                 self.__dirtOnShovel = True
 
 
@@ -177,8 +176,6 @@ class Game:
         self.shakeSifter()
 
         if self.__digging:
-            self.shovel = Objects.Renderable()
-            self.shovel.loadImage("../imgs/tmp/shovel.png")
             pos = pygame.mouse.get_pos()
             self.shovel.setPosition(pos[0] - 67, pos[1] - 112)
 
@@ -189,7 +186,6 @@ class Game:
                 self.__digging = False
                 self.__dirtOnShovel = False
                 self.shovel.setPosition(1040, 80)
-                self.__renderables.append(self.shovel)
 
         if self.__controls.spaceKeyPressed:
             if self.trash is not None and self.__picking:
@@ -210,9 +206,6 @@ class Game:
 
         for object in self.__renderables:
             self.__window.blit(object.getImage(), object.getPosition())
-
-        if self.__digging:
-            self.__window.blit(self.shovel.getImage(), self.shovel.getPosition())
 
         pygame.display.update()
 
