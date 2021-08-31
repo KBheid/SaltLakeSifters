@@ -1,10 +1,17 @@
+import math
+
 import pygame
 import sys
+import time # Used for ensuring that frames occur every X milliseconds
 import Controls
 import Objects
 import random
 import GameObjects.Sifter
 import GameObjects.GemGrid
+
+
+# The framerate that the game runs at
+FRAMERATE = 60
 
 
 # TODO: This should be a singleton class
@@ -68,10 +75,20 @@ class Game:
 
     # Main loop
     def mainLoop(self):
+        elapsedTime = 0
+        lastTime = time.time()
+
         while self.__running:
-            self.__eventLoop()
-            self.__gameLoop()
-            self.__renderLoop()
+            curTime = time.time()
+            elapsedTime = curTime - lastTime
+
+            if elapsedTime >= 1/FRAMERATE:
+                elapsedTime = 0
+                lastTime = curTime
+
+                self.__eventLoop()
+                self.__gameLoop()
+                self.__renderLoop()
 
         pygame.quit()
         sys.exit()
