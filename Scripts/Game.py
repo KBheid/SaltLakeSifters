@@ -2,6 +2,7 @@ import pygame
 import sys
 import Controls
 import Objects
+import random
 
 
 # TODO: This should be a singleton class
@@ -34,6 +35,7 @@ class Game:
 
         self.__digging = False
         self.__sieving = False
+        self.__shakeSieveCount = 0
 
     # Add a sprite to be rendered
     def addSprite(self, sprite):
@@ -44,6 +46,19 @@ class Game:
     def addClickableSprite(self, sprite):
         if sprite not in self.__clickables:
             self.__clickables.append(sprite)
+
+    def shakeSieve(self):
+        if self.__shakeSieveCount <= 0:
+            return
+
+        pos = self.sieve.getPosition()
+        bia = 20
+        bia = -bia if ( self.__shakeSieveCount % 2 == 0 ) else bia
+        self.sieve.setPosition(pos[0] + bia, pos[1])
+        self.__shakeSieveCount -= 1
+        # could reveal the gems in 9 shakes
+        #if
+
 
     # Main loop
     def mainLoop(self):
@@ -81,6 +96,7 @@ class Game:
 
                 # dirt placed on sieve
                 if self.__sieving:
+                    # TODO. click several times with the dirt decreasing
                     self.__renderables.remove(self.dirt)
                     self.__sieving = False
 
@@ -93,6 +109,10 @@ class Game:
                     self.__renderables.append(self.dirt)
                     self.__digging = False
                     self.__sieving = True
+                else:
+                    self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
+
+        self.shakeSieve()
 
         if self.__digging:
             self.shovel = Objects.Renderable()
