@@ -6,8 +6,7 @@ import time # Used for ensuring that frames occur every X milliseconds
 import Controls
 import Objects
 import random
-import GameObjects.Sifter
-import GameObjects.GemGrid
+from GameObjects import Sifter, GemGrid, Gem, Trash
 
 
 # The framerate that the game runs at
@@ -141,23 +140,22 @@ class Game:
                     if rand == 0:
                         pass
                     elif rand < 6:
-                        trashNum = random.randint(1, 5)
-                        self.trash = Objects.Renderable()
-                        filename = "../imgs/Art imgs/Trash/trash" + str(trashNum) + ".png"
-                        self.trash.loadImage(filename)
+                        self.trash = Trash.Trash()
+                        self.__renderables.append(self.trash)
+
                         sievePos = self.sifter.getPosition()
                         self.trash.setPosition(sievePos[0] + 10, sievePos[1] + 10)
-                        self.__renderables.append(self.trash)
+                        
                         self.gem = None
                         self.__picking = True
                     else:
-                        gemNum = random.randint(1, 5)
-                        self.gem = Objects.Renderable()
-                        filename = "../imgs/Art imgs/Gems/gem" + str(gemNum) + ".png"
-                        self.gem.loadImage(filename)
+                        # Create new gem
+                        self.gem = Gem.Gem()
+                        self.__renderables.append(self.gem)
+
                         sievePos = self.sifter.getPosition()
                         self.gem.setPosition(sievePos[0] + 10, sievePos[1] + 10)
-                        self.__renderables.append(self.gem)
+
                         self.trash = None
                         self.__picking = True
 
@@ -176,6 +174,16 @@ class Game:
                 else:
                     self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
 
+        self.shakeSifter()
+
+        if self.__digging:
+            self.shovel = Objects.Renderable()
+            self.shovel.loadImage("../imgs/tmp/shovel.png")
+            pos = pygame.mouse.get_pos()
+            self.shovel.setPosition(pos[0] - 67, pos[1] - 112)
+
+    # Game loop
+    def __gameLoop(self):
         if self.__controls.rightClickPressed:
             if self.__digging:
                 self.__digging = False
@@ -196,21 +204,6 @@ class Game:
 
                 self.gemGrid.addGem(gem)
 
-
-        self.shakeSifter()
-
-        if self.__digging:
-            self.shovel = Objects.Renderable()
-            self.shovel.loadImage("../imgs/tmp/shovel.png")
-            pos = pygame.mouse.get_pos()
-            self.shovel.setPosition(pos[0] - 67, pos[1] - 112)
-
-
-    # Game loop
-    def __gameLoop(self):
-        if self.__controls.spaceKeyPressed:
-            pass
-
     # Render loop
     def __renderLoop(self):
         self.__window.fill((255, 255, 0))
@@ -224,11 +217,11 @@ class Game:
         pygame.display.update()
 
     def __startUp(self):
-        self.sifter = GameObjects.Sifter.Sifter()
+        self.sifter = Sifter.Sifter()
         self.__renderables.append(self.sifter)
         self.__clickables.append(self.sifter)
 
-        self.gemGrid = GameObjects.GemGrid.GemGrid()
+        self.gemGrid = GemGrid.GemGrid()
         self.__renderables.append(self.gemGrid)
         self.__clickables.append(self.gemGrid)
 
