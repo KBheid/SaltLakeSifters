@@ -202,7 +202,7 @@ class Game:
                 count = self.gemGrid.count
                 row = int((count - 1) / 2)
                 column = int((count - 1) % 2)
-                gem.setPosition(pos[0] + ((column + 1) * 100), pos[1] + ((row + 1) * 100))
+                gem.setPosition(pos[0] + ((column + 1) * 100) - 50, pos[1] + ((row + 1) * 100) - 50)
                 self.__renderables.append(gem)
 
 
