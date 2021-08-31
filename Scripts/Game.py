@@ -232,7 +232,7 @@ class Game:
         self.__clickables.append(self.rawDirt)
 
         self.shovel = Objects.Renderable()
-        self.shovel.loadImage("../imgs/shovel.png")
+        self.shovel.loadImage("../imgs/tmp/shovel.png")
         self.shovel.setPosition(1040, 80)
         self.__renderables.append(self.shovel)
         self.__clickables.append(self.shovel)
