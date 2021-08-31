@@ -109,7 +109,7 @@ class Game:
             clicked_sprites = [s for s in self.__clickables if s.rect.collidepoint(pos)]
 
             for sp in clicked_sprites:
-                print("The following sprite was clicked: %s" % sp)
+                pass
 
             if self.shovel.rect.collidepoint(pos) and not self.__digging:
                 self.__digging = True
@@ -218,7 +218,7 @@ class Game:
     # Game loop
     def __gameLoop(self):
         if self.__controls.spaceKeyPressed:
-            print("test")
+            pass
 
     # Render loop
     def __renderLoop(self):
