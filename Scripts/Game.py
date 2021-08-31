@@ -95,13 +95,11 @@ class Game:
         if self.__controls.quitPressed:
             self.__running = False
 
-
-        # Handle clicks, set renderables to clicked
-        # is the clickables cleared every frame?
+        # Handle clicks
         if self.__controls.leftClickPressed:
             pos = pygame.mouse.get_pos()
 
-            # Get all sprites that rects intersect with the mouse position
+            # Get all sprites whose rect intersects with the mouse position
             clicked_sprites = [s for s in self.__clickables if s.rect.collidepoint(pos)]
 
             for sp in clicked_sprites:
@@ -112,14 +110,11 @@ class Game:
                     self.__dirtOnShovel = True
 
                 if sp is self.sifter and not self.__picking:
-                    # dirt placed on sieve, sieve it off
+                    # If we do not have the shovel and there is dirt, shake the sifter
                     if not self.__digging and self.sifter.hasDirt():
                         self.sifter.sift(1)
 
-                        # get random stuff
-                        # 10% nothing 50% trash 40% gem 0,12345,6789
-                        # TODO. different probability of finding different gems
-                        # Yes, I know the code is crappy af
+                        # Create gems or trash
                         rand = random.randint(0, 9)
                         if rand == 0:
                             pass
@@ -143,13 +138,14 @@ class Game:
                             self.trash = None
                             self.__picking = True
 
+                    # If we do have the shovel and it has dirt in it, place dirt in sifter
                     if self.__digging and self.__dirtOnShovel:
                         self.sifter.addDirt(1)
                         self.__dirtOnShovel = False
+
+                    # If we don't have the shovel, shake the sifter
                     else:
                         self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
-
-        self.shakeSifter()
 
         if self.__digging:
             pos = pygame.mouse.get_pos()
@@ -176,21 +172,26 @@ class Game:
 
                 self.gemGrid.addGem(gem)
 
-    # Render loop
-    def __renderLoop(self):
-        self.__window.fill((255, 255, 0))
+        # If it needs to be shaken, shake it
+        self.shakeSifter()
 
-        for object in self.__renderables:
-            self.__window.blit(object.getImage(), object.getPosition())
+    # Render loop
+    # ORDER MATTERS
+    def __renderLoop(self):
+        self.__window.fill((206, 237, 239))
+
+        self.__window.blit(self.sifter.getImage(), self.sifter.getPosition())
 
         if self.sifter.dirt is not None:
             self.__window.blit(self.sifter.dirt.getImage(), self.sifter.dirt.getPosition())
+
+        for object in self.__renderables:
+            self.__window.blit(object.getImage(), object.getPosition())
 
         pygame.display.update()
 
     def __startUp(self):
         self.sifter = Sifter.Sifter()
-        self.__renderables.append(self.sifter)
         self.__clickables.append(self.sifter)
 
         self.gemGrid = GemGrid.GemGrid()
