@@ -1,4 +1,5 @@
 import pygame
+import pygame.freetype
 import random
 import Objects
 
@@ -20,6 +21,8 @@ class Gem(Objects.Renderable):
         elif rand < 71:
             gemNum = 4
         return gemNum
+
+    # def updateText(self, gem):
 
     def __init__(self):
         Objects.Renderable.__init__(self)

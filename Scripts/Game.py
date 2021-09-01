@@ -174,11 +174,20 @@ class Game:
                 gem = self.gem
                 self.gem = None
 
+                # a duplicated gem, once picked, doesn't really exist
                 if not self.gemGrid.addGem(gem):
                     self.__renderables.remove(gem)
 
         # If it needs to be shaken, shake it
         self.shakeSifter()
+        for id in (1, 5):
+            pos = self.gemGrid.getPosition()
+            row = id - 1
+            column = 1
+            if self.gemGrid.updateGemCountText(id) is not None:
+                print("LLLLL")
+                self.__window.blit(self.gemGrid.updateGemCountText(id),
+                               (pos[0] + ((column + 1) * 100) - 50, pos[1] + ((row + 1) * 100) - 50))
 
     # Render loop
     # ORDER MATTERS

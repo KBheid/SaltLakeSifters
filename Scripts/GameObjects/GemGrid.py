@@ -12,15 +12,24 @@ class GemGrid(Objects.Renderable):
         self.count = 0
 
         self.setPosition(20, 84)
-        self.gemList = [0, 0, 0, 0, 0]
+        self.__gemList = [0, 0, 0, 0, 0]
+
+    def updateGemCountText(self, id) -> pygame.surface:
+        if self.__gemList[id - 1] > 0:
+            font = pygame.freetype.Font("../fonts/IniyaDisplay-ow0Ra.otf", 100)
+            text = font.render(str(self.__gemList[id - 1]), 100)
+            print("wtf", self.__gemList[id - 1])
+            return text[0]
+        return None
+
 
     def addGem(self, gem) -> bool:
         # TODO: Use id to determine which gem to add
         self.count += 1
 
-        self.gemList[gem.id - 1] += 1
+        self.__gemList[gem.id - 1] += 1
 
-        if self.gemList[gem.id - 1] == 1:
+        if self.__gemList[gem.id - 1] == 1:
             gem.image = gem.image.convert_alpha()
             gem.image = pygame.transform.scale(gem.image, (100, 100))
             pos = self.getPosition()
@@ -34,4 +43,8 @@ class GemGrid(Objects.Renderable):
             return True
 
         return False
+
+    def getGemNum(self, gem) -> int:
+        return self.__gemList[gem.id - 1]
+
 
