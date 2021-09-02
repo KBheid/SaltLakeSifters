@@ -110,9 +110,7 @@ class Game:
 
                         # Create gems or trash
                         rand = random.randint(0, 9)
-                        if rand == 0:
-                            pass
-                        elif rand < 6:
+                        if 0 < rand < 6:
                             self.trash = Trash.Trash()
                             self.__renderables.append(self.trash)
 
@@ -133,8 +131,8 @@ class Game:
                             self.__picking = True
 
                     # If we don't have the shovel, shake the sifter
-                    else:
-                        self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
+                    # else:
+                    self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
 
                 if sp is self.shovel:
                     self.__digging = True
@@ -187,7 +185,6 @@ class Game:
 
         # If it needs to be shaken, shake it
         self.shakeSifter()
-
 
     # Render loop
     # ORDER MATTERS

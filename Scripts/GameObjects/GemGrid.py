@@ -51,5 +51,3 @@ class GemGrid(Objects.Renderable):
 
     def getGemNum(self, gem) -> int:
         return self.__gemList[gem.id - 1]
-
-
