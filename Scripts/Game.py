@@ -20,6 +20,7 @@ class Game:
     def __init__(self):
         # Initialize the pygame
         pygame.init()
+        pygame.mixer.init()
 
         # Create window and set window properties
         self.__size = 1280, 768
@@ -122,6 +123,7 @@ class Game:
                         # Create new gem
                         gem = Gem.Gem()
                         gem.image = pygame.transform.scale(gem.image, (100, 100))
+                        gem.rect = gem.image.get_rect()
                         self.__renderables.append(gem)
                         self.__clickables.append(gem)
 
@@ -132,6 +134,9 @@ class Game:
 
                 # Shake the sifter
                 self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
+
+                pygame.mixer.music.load("../sfx/sieveShaking.mp3")
+                pygame.mixer.music.play()
 
         # Handle clicks
         if self.__controls.leftClickPressed:
@@ -176,6 +181,9 @@ class Game:
             self.shovel.loadImage("../imgs/Art imgs/shovel_with_dirt.png")
             self.shovel.image = pygame.transform.scale(self.shovel.image, (180, 241))
             self.__dirtOnShovel = True
+
+            pygame.mixer.music.load("../sfx/digDirt.mp3")
+            pygame.mixer.music.play()
 
 
         # Update shovel position to match mouse if digging

@@ -34,8 +34,8 @@ class Gem(Objects.Renderable):
         self.setMove()
 
     def setMove(self):
-        self.__xDif = random.randint(-10, 10)
-        self.__yDif = random.randint(-10, 10)
+        self.__xDif = random.randint(-65, 65)
+        self.__yDif = random.randint(-65, 65)
 
         self.moveFrames = random.randint(5, 20)
 
@@ -43,3 +43,6 @@ class Gem(Objects.Renderable):
         if self.moveFrames > 0:
             self.setPosition(self.getPosition()[0]+self.__xDif, self.getPosition()[1]+self.__yDif)
             self.moveFrames -= 1
+
+            self.__xDif = self.__xDif/1.5
+            self.__yDif = self.__yDif/1.5
