@@ -33,6 +33,8 @@ class GemGrid(Objects.Renderable):
         # self.count += 1
 
         self.__gemList[gem.id - 1] += 1
+        pygame.mixer.music.load("../sfx/pickGem.mp3")
+        pygame.mixer.music.play()
 
         if self.__gemList[gem.id - 1] == 1:
             gem.image = gem.image.convert_alpha()
