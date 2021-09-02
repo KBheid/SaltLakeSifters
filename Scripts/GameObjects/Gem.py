@@ -31,3 +31,15 @@ class Gem(Objects.Renderable):
         filename = "../imgs/Art imgs/Gems/gem" + str(self.id) + ".png"
         self.loadImage(filename)
 
+        self.setMove()
+
+    def setMove(self):
+        self.__xDif = random.randint(-10, 10)
+        self.__yDif = random.randint(-10, 10)
+
+        self.moveFrames = random.randint(5, 20)
+
+    def move(self):
+        if self.moveFrames > 0:
+            self.setPosition(self.getPosition()[0]+self.__xDif, self.getPosition()[1]+self.__yDif)
+            self.moveFrames -= 1

@@ -240,6 +240,10 @@ class Game:
             if len(self.gems) + len(self.trash) == 0:
                 self.__picking = False
 
+        # Move gems
+        for gem in self.gems:
+            gem.move()
+
         # If it needs to be shaken, shake it
         self.shakeSifter()
 

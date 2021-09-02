@@ -45,12 +45,6 @@ class Renderable(pygame.sprite.Sprite):
     def getRect(self):
         return self.rect
 
-    def move(self, xDif, yDif):
-        newX, newY = self.getPosition()
-        newX += xDif
-        newY += yDif
-        self.setPosition(newX, newY)
-
 
 # Class for non-renderable objects
 class Nonrenderable(Object):
