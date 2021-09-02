@@ -156,11 +156,13 @@ class Game:
         pos = pygame.mouse.get_pos()
         if self.sifter.rect.collidepoint(pos) and self.__digging and self.__dirtOnShovel:
             self.sifter.addDirt(1)
-            self.shovel.loadImage("../imgs/tmp/shovel.png")
+            self.shovel.loadImage("../imgs/Art imgs/shovel.png")
+            self.shovel.image = pygame.transform.scale(self.shovel.image, (180, 241))
             self.__dirtOnShovel = False
 
         if self.rawDirt.rect.collidepoint(pos[0], pos[1]+50) and self.__digging:
-            self.shovel.loadImage("../imgs/tmp/shovelWithDirt.png")
+            self.shovel.loadImage("../imgs/Art imgs/shovel_with_dirt.png")
+            self.shovel.image = pygame.transform.scale(self.shovel.image, (180, 241))
             self.__dirtOnShovel = True
 
 
@@ -238,7 +240,8 @@ class Game:
         self.__clickables.append(self.rawDirt)
 
         self.shovel = Objects.Renderable()
-        self.shovel.loadImage("../imgs/tmp/shovel.png")
+        self.shovel.loadImage("../imgs/Art imgs/shovel.png")
+        self.shovel.image = pygame.transform.scale(self.shovel.image, (180, 241))
         self.shovel.setPosition(1040, 80)
         self.__renderables.append(self.shovel)
         self.__clickables.append(self.shovel)
