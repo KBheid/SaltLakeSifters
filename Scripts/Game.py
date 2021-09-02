@@ -150,6 +150,8 @@ class Game:
         if self.__digging and not self.__controls.leftClickHeld:
             self.__digging = False
             self.__dirtOnShovel = False
+            self.shovel.loadImage("../imgs/Art imgs/shovel.png")
+            self.shovel.image = pygame.transform.scale(self.shovel.image, (180, 241))
             self.shovel.setPosition(1040, 80)
 
         # HANDLE MOTION WITHOUT CLICKING
