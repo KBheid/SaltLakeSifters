@@ -156,9 +156,11 @@ class Game:
         pos = pygame.mouse.get_pos()
         if self.sifter.rect.collidepoint(pos) and self.__digging and self.__dirtOnShovel:
             self.sifter.addDirt(1)
+            self.shovel.loadImage("../imgs/tmp/shovel.png")
             self.__dirtOnShovel = False
 
         if self.rawDirt.rect.collidepoint(pos[0], pos[1]+50) and self.__digging:
+            self.shovel.loadImage("../imgs/tmp/shovelWithDirt.png")
             self.__dirtOnShovel = True
 
 
