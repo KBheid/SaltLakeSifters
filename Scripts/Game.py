@@ -44,6 +44,7 @@ class Game:
         self.__sieving = False
         self.__picking = False
         self.__dragging = False
+        self.__draggedItem = None
         self.__shakeSieveCount = 0
         self.__dirtCount = 0
 
@@ -99,29 +100,35 @@ class Game:
             if self.sifter.hasDirt() and not self.__picking:
                 self.sifter.sift(1)
 
-                # Create gems or trash
-                #   [1-5] trash
-                #   [0, 6-9] treasure
-                rand = random.randint(0, 9)
-                if 0 < rand < 6:
-                    self.trash = Trash.Trash()
-                    self.__renderables.append(self.trash)
-                    self.__clickables.append(self.trash)
-                    self.trash.setPosition(350, 95)
+                self.__picking = True
 
-                    self.gem = None
-                    self.__picking = True
-                else:
-                    # Create new gem
-                    self.gem = Gem.Gem()
-                    self.gem.image = pygame.transform.scale(self.gem.image, (100, 100))
-                    self.__renderables.append(self.gem)
-                    self.__clickables.append(self.gem)
+                # Create 1-5 random items
+                countItems = random.randint(1, 5)
+                for i in range(countItems):
 
-                    self.gem.setPosition(590, 285)
+                    # Create gems or trash
+                    #   [1-5] trash
+                    #   [0, 6-9] treasure
+                    rand = random.randint(0, 9)
+                    if 0 < rand < 6:
+                        # Create trash
+                        trash = Trash.Trash()
+                        self.__renderables.append(trash)
+                        self.__clickables.append(trash)
+                        trash.setPosition(350+rand*3, 95-rand+i*5)
 
-                    self.trash = None
-                    self.__picking = True
+                        self.trash.append(trash)
+                    else:
+                        # Create new gem
+                        gem = Gem.Gem()
+                        gem.image = pygame.transform.scale(gem.image, (100, 100))
+                        self.__renderables.append(gem)
+                        self.__clickables.append(gem)
+
+                        gem.setPosition(590-rand*10-i*3, 285+rand*2-i*12)
+
+                        self.gems.append(gem)
+
 
                 # Shake the sifter
                 self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
@@ -137,15 +144,17 @@ class Game:
                 if sp is self.shovel:
                     self.__digging = True
 
-                if self.__picking and sp is self.gem or sp is self.trash:
+                if self.__picking and sp in self.gems or sp in self.trash:
                     self.__dragging = True
+                    self.__draggedItem = sp
 
         if self.__dragging:
             pos = pygame.mouse.get_pos()
-            if self.gem is not None:
-                self.gem.setPosition(pos[0] - self.gem.image.get_rect().width/2, pos[1] - self.gem.image.get_rect().height/2)
-            if self.trash is not None:
-                self.trash.setPosition(pos[0] - 170, pos[1] - 200)
+            if self.__draggedItem is not None:
+                self.__draggedItem.setPosition(pos[0] - self.__draggedItem.image.get_rect().width/2, pos[1] - self.__draggedItem.image.get_rect().height/2)
+            else:
+                self.__dragging = False
+                self.__draggedItem = None
 
         # If the player was digging and is no longer holding left click, they are no longer digging
         if self.__digging and not self.__controls.leftClickHeld:
@@ -181,32 +190,52 @@ class Game:
             self.__dragging = False
             pos = pygame.mouse.get_pos()
             if self.gemGrid.rect.collidepoint(pos):
-                if self.gem is not None:
-                    self.__picking = False
-                    gem = self.gem
-                    self.__clickables.remove(self.gem)
-                    self.gem = None
+                if self.__draggedItem is not None:
+                    if isinstance(self.__draggedItem, Gem.Gem):
+                        ## TODO set picking to true if items remain
 
-                    # a duplicated gem, once picked, doesn't really exist
-                    if not self.gemGrid.addGem(gem):
-                        self.__renderables.remove(gem)
-                        number = self.gemGrid.getGemCountNumber(gem.id)
-                        # keep track of the numbers
-                        previousNum = self.gemGrid.gemCountNumberList[gem.id - 1]
-                        if previousNum is not None:
-                            self.__renderables.remove(previousNum)
-                        self.gemGrid.gemCountNumberList[gem.id - 1] = number
-                        self.__renderables.append(number)
-                if self.trash is not None:
-                    self.trash.setPosition(350, 95)
+                        gem = self.__draggedItem
+                        self.__clickables.remove(gem)
+                        self.gems.remove(gem)
+
+                        self.__dragging = False
+                        self.__draggedItem = None
+
+                        # a duplicated gem, once picked, doesn't really exist
+                        if not self.gemGrid.addGem(gem):
+                            self.__renderables.remove(gem)
+                            number = self.gemGrid.getGemCountNumber(gem.id)
+                            # keep track of the numbers
+                            previousNum = self.gemGrid.gemCountNumberList[gem.id - 1]
+                            if previousNum is not None:
+                                self.__renderables.remove(previousNum)
+                            self.gemGrid.gemCountNumberList[gem.id - 1] = number
+                            self.__renderables.append(number)
+
+                    if isinstance(self.__draggedItem, Trash.Trash):
+                        self.__draggedItem.setPosition(350, 95)
+                        self.__dragging = False
+                        self.__draggedItem = None
+
             else:
-                if self.gem is not None:
-                    self.gem.setPosition(590, 285)
-                if self.trash is not None:
-                    self.__picking = False
-                    self.__renderables.remove(self.trash)
-                    self.__clickables.remove(self.trash)
-                    self.trash = None
+                if self.__draggedItem is not None:
+                    if isinstance(self.__draggedItem, Trash.Trash):
+                        trash = self.__draggedItem
+
+                        self.__renderables.remove(trash)
+                        self.__clickables.remove(trash)
+                        self.trash.remove(trash)
+
+                        self.__dragging = False
+                        self.__draggedItem = None
+                    else:
+                        self.__draggedItem.setPosition(590, 285)
+
+                        self.__dragging = False
+                        self.__draggedItem = None
+
+            if len(self.gems) + len(self.trash) == 0:
+                self.__picking = False
 
         # If it needs to be shaken, shake it
         self.shakeSifter()
@@ -249,5 +278,6 @@ class Game:
         self.__renderables.append(self.shovel)
         self.__clickables.append(self.shovel)
 
-        self.trash = None
-        self.gem = None
+        self.trash = []
+        self.gems = []
+
