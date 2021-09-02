@@ -199,6 +199,8 @@ class Game:
                         self.__renderables.append(number)
                 if self.trash is not None:
                     self.trash.setPosition(350, 95)
+            elif self.sifter.rect.collidepoint(pos) and self.trash is not None:
+                self.trash.setPosition(350, 95)
             else:
                 if self.gem is not None:
                     self.gem.setPosition(590, 285)
