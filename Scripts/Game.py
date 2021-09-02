@@ -43,7 +43,7 @@ class Game:
         self.__dirtOnShovel = False
         self.__sieving = False
         self.__picking = False
-        self.__picked = False
+        self.__dragging = False
         self.__shakeSieveCount = 0
         self.__dirtCount = 0
 
@@ -113,29 +113,38 @@ class Game:
                         if 0 < rand < 6:
                             self.trash = Trash.Trash()
                             self.__renderables.append(self.trash)
-
-                            sievePos = self.sifter.getPosition()
-                            self.trash.setPosition(sievePos[0] + 10, sievePos[1] + 10)
+                            self.__clickables.append(self.trash)
+                            self.trash.setPosition(350, 95)
 
                             self.gem = None
                             self.__picking = True
                         else:
                             # Create new gem
                             self.gem = Gem.Gem()
+                            self.gem.image = pygame.transform.scale(self.gem.image, (100, 100))
                             self.__renderables.append(self.gem)
+                            self.__clickables.append(self.gem)
 
-                            sievePos = self.sifter.getPosition()
-                            self.gem.setPosition(sievePos[0] + 10, sievePos[1] + 10)
+                            self.gem.setPosition(590, 285)
 
                             self.trash = None
                             self.__picking = True
 
                     # If we don't have the shovel, shake the sifter
-                    # else:
                     self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
 
                 if sp is self.shovel:
                     self.__digging = True
+
+                if self.__picking and sp is self.gem or sp is self.trash:
+                    self.__dragging = True
+
+        if self.__dragging:
+            pos = pygame.mouse.get_pos()
+            if self.gem is not None:
+                self.gem.setPosition(pos[0] - 67, pos[1] - 112)
+            if self.trash is not None:
+                self.trash.setPosition(pos[0] - 170, pos[1] - 200)
 
         # If the player was digging and is no longer holding left click, they are no longer digging
         if self.__digging and not self.__controls.leftClickHeld:
@@ -161,27 +170,36 @@ class Game:
     # Game loop
     def __gameLoop(self):
 
-        if self.__controls.spaceKeyPressed:
-            if self.trash is not None and self.__picking:
-                self.__picking = False
-                self.__renderables.remove(self.trash)
-                self.trash = None
+        if self.__dragging and not self.__controls.leftClickHeld:
+            self.__dragging = False
+            pos = pygame.mouse.get_pos()
+            if self.gemGrid.rect.collidepoint(pos):
+                if self.gem is not None:
+                    self.__picking = False
+                    gem = self.gem
+                    self.__clickables.remove(self.gem)
+                    self.gem = None
 
-            if self.gem is not None and self.__picking:
-                self.__picking = False
-                gem = self.gem
-                self.gem = None
-
-                # a duplicated gem, once picked, doesn't really exist
-                if not self.gemGrid.addGem(gem):
-                    self.__renderables.remove(gem)
-                    number = self.gemGrid.getGemCountNumber(gem.id)
-                    # keep track of the numbers
-                    previousNum = self.gemGrid.gemCountNumberList[gem.id - 1]
-                    if previousNum is not None:
-                        self.__renderables.remove(previousNum)
-                    self.gemGrid.gemCountNumberList[gem.id - 1] = number
-                    self.__renderables.append(number)
+                    # a duplicated gem, once picked, doesn't really exist
+                    if not self.gemGrid.addGem(gem):
+                        self.__renderables.remove(gem)
+                        number = self.gemGrid.getGemCountNumber(gem.id)
+                        # keep track of the numbers
+                        previousNum = self.gemGrid.gemCountNumberList[gem.id - 1]
+                        if previousNum is not None:
+                            self.__renderables.remove(previousNum)
+                        self.gemGrid.gemCountNumberList[gem.id - 1] = number
+                        self.__renderables.append(number)
+                if self.trash is not None:
+                    self.trash.setPosition(350, 95)
+            else:
+                if self.gem is not None:
+                    self.gem.setPosition(590, 285)
+                if self.trash is not None:
+                    self.__picking = False
+                    self.__renderables.remove(self.trash)
+                    self.__clickables.remove(self.trash)
+                    self.trash = None
 
         # If it needs to be shaken, shake it
         self.shakeSifter()
