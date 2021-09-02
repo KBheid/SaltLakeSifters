@@ -177,17 +177,17 @@ class Game:
                 # a duplicated gem, once picked, doesn't really exist
                 if not self.gemGrid.addGem(gem):
                     self.__renderables.remove(gem)
+                    number = self.gemGrid.getGemCountNumber(gem.id)
+                    # keep track of the numbers
+                    previousNum = self.gemGrid.gemCountNumberList[gem.id - 1]
+                    if previousNum is not None:
+                        self.__renderables.remove(previousNum)
+                    self.gemGrid.gemCountNumberList[gem.id - 1] = number
+                    self.__renderables.append(number)
 
         # If it needs to be shaken, shake it
         self.shakeSifter()
-        for id in (1, 5):
-            pos = self.gemGrid.getPosition()
-            row = id - 1
-            column = 1
-            if self.gemGrid.updateGemCountText(id) is not None:
-                print("LLLLL")
-                self.__window.blit(self.gemGrid.updateGemCountText(id),
-                               (pos[0] + ((column + 1) * 100) - 50, pos[1] + ((row + 1) * 100) - 50))
+
 
     # Render loop
     # ORDER MATTERS
