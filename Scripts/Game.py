@@ -192,8 +192,6 @@ class Game:
             if self.gemGrid.rect.collidepoint(pos):
                 if self.__draggedItem is not None:
                     if isinstance(self.__draggedItem, Gem.Gem):
-                        ## TODO set picking to true if items remain
-
                         gem = self.__draggedItem
                         self.__clickables.remove(gem)
                         self.gems.remove(gem)
@@ -220,11 +218,16 @@ class Game:
             else:
                 if self.__draggedItem is not None:
                     if isinstance(self.__draggedItem, Trash.Trash):
-                        trash = self.__draggedItem
+                        # If it is still in the sifter, do not remove it
+                        if self.sifter.rect.collidepoint(pos):
+                            self.__draggedItem.setPosition(350, 95)
 
-                        self.__renderables.remove(trash)
-                        self.__clickables.remove(trash)
-                        self.trash.remove(trash)
+                        else:
+                            trash = self.__draggedItem
+
+                            self.__renderables.remove(trash)
+                            self.__clickables.remove(trash)
+                            self.trash.remove(trash)
 
                         self.__dragging = False
                         self.__draggedItem = None
