@@ -142,7 +142,7 @@ class Game:
         if self.__dragging:
             pos = pygame.mouse.get_pos()
             if self.gem is not None:
-                self.gem.setPosition(pos[0] - 67, pos[1] - 112)
+                self.gem.setPosition(pos[0] - self.gem.image.get_rect().width/2, pos[1] - self.gem.image.get_rect().height/2)
             if self.trash is not None:
                 self.trash.setPosition(pos[0] - 170, pos[1] - 200)
 
@@ -236,7 +236,7 @@ class Game:
         self.rawDirt = Objects.Renderable()
         self.rawDirt.loadImage("../imgs/Art imgs/Dirt_pile.png", (400, 400))
         self.rawDirt.setPosition(850, 400)
-        self.rawDirt.rect = pygame.Rect(self.rawDirt.rect.left+125, self.rawDirt.rect.top+75, 100, 100)
+        self.rawDirt.rect = pygame.Rect(self.rawDirt.rect.left+150, self.rawDirt.rect.top+125, 175, 100)
         self.__digging = False
         self.__renderables.append(self.rawDirt)
         self.__clickables.append(self.rawDirt)
