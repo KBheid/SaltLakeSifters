@@ -95,6 +95,37 @@ class Game:
         if self.__controls.quitPressed:
             self.__running = False
 
+        if self.__controls.spaceKeyPressed:
+            if self.sifter.hasDirt() and not self.__picking:
+                self.sifter.sift(1)
+
+                # Create gems or trash
+                #   [1-5] trash
+                #   [0, 6-9] treasure
+                rand = random.randint(0, 9)
+                if 0 < rand < 6:
+                    self.trash = Trash.Trash()
+                    self.__renderables.append(self.trash)
+                    self.__clickables.append(self.trash)
+                    self.trash.setPosition(350, 95)
+
+                    self.gem = None
+                    self.__picking = True
+                else:
+                    # Create new gem
+                    self.gem = Gem.Gem()
+                    self.gem.image = pygame.transform.scale(self.gem.image, (100, 100))
+                    self.__renderables.append(self.gem)
+                    self.__clickables.append(self.gem)
+
+                    self.gem.setPosition(590, 285)
+
+                    self.trash = None
+                    self.__picking = True
+
+                # Shake the sifter
+                self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
+
         # Handle clicks
         if self.__controls.leftClickPressed:
             pos = pygame.mouse.get_pos()
@@ -103,36 +134,6 @@ class Game:
             clicked_sprites = [s for s in self.__clickables if s.rect.collidepoint(pos)]
 
             for sp in clicked_sprites:
-                if sp is self.sifter and not self.__picking:
-                    # If we do not have the shovel and there is dirt, shake the sifter
-                    if not self.__digging and self.sifter.hasDirt():
-                        self.sifter.sift(1)
-
-                        # Create gems or trash
-                        rand = random.randint(0, 9)
-                        if 0 < rand < 6:
-                            self.trash = Trash.Trash()
-                            self.__renderables.append(self.trash)
-                            self.__clickables.append(self.trash)
-                            self.trash.setPosition(350, 95)
-
-                            self.gem = None
-                            self.__picking = True
-                        else:
-                            # Create new gem
-                            self.gem = Gem.Gem()
-                            self.gem.image = pygame.transform.scale(self.gem.image, (100, 100))
-                            self.__renderables.append(self.gem)
-                            self.__clickables.append(self.gem)
-
-                            self.gem.setPosition(590, 285)
-
-                            self.trash = None
-                            self.__picking = True
-
-                    # If we don't have the shovel, shake the sifter
-                    self.__shakeSieveCount = min(self.__shakeSieveCount + 8, 24)
-
                 if sp is self.shovel:
                     self.__digging = True
 
