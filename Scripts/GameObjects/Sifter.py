@@ -30,7 +30,7 @@ class Sifter(Objects.Renderable):
         self.loadImage("../imgs/Art imgs/Sifter.png")
         self.image = self.image.convert_alpha()
         self.image = pygame.transform.scale(self.image, (600, 600))
-        self.rect.size = 600, 600;
+        self.rect.size = 600, 600
 
         # Set the X and Y positions to the center of the screen
         x, y = pygame.display.get_window_size()
