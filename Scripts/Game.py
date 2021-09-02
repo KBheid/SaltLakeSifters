@@ -232,8 +232,9 @@ class Game:
         self.__clickables.append(self.gemGrid)
 
         self.rawDirt = Objects.Renderable()
-        self.rawDirt.loadImage("../imgs/rawDirt.png")
-        self.rawDirt.setPosition(940, 504)
+        self.rawDirt.loadImage("../imgs/Art imgs/Dirt_pile.png", (400, 400))
+        self.rawDirt.setPosition(850, 400)
+        self.rawDirt.rect = pygame.Rect(self.rawDirt.rect.left+125, self.rawDirt.rect.top+75, 100, 100)
         self.__digging = False
         self.__renderables.append(self.rawDirt)
         self.__clickables.append(self.rawDirt)

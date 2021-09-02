@@ -19,8 +19,12 @@ class Renderable(pygame.sprite.Sprite):
         self.rect = None
 
     # Load the player image
-    def loadImage(self, path):
-        self.image = pygame.image.load(path)
+    def loadImage(self, path, size=None):
+        img = pygame.image.load(path)
+        if size is not None:
+            img = pygame.transform.scale(img, size)
+
+        self.image = img
         self.rect = self.image.get_rect(topleft = (self.__x, self.__y))
 
     # Return the player image
