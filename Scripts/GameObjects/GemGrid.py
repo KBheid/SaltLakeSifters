@@ -23,7 +23,7 @@ class GemGrid(Objects.Renderable):
         pos = self.getPosition()
         row = id - 1
         column = 1
-        number.setPosition(pos[0] + ((column + 1) * 200) - 40, pos[1] + ((row + 1) * 100) - 20)
+        number.setPosition(pos[0] + ((column + 1) * 225) - 180, pos[1] + ((row + 1) * 100) - 20)
         return number
 
 
@@ -45,7 +45,7 @@ class GemGrid(Objects.Renderable):
             # gem.setPosition(pos[0] + ((column + 1) * 100) - 50, pos[1] + ((row + 1) * 100) - 50)
             row = gem.id - 1
             column = 0
-            gem.setPosition(pos[0] + ((column + 1) * 200) - 50, pos[1] + ((row + 1) * 100) - 50)
+            gem.setPosition(pos[0] + ((column + 1) * 225) - 50, pos[1] + ((row + 1) * 100) - 50)
             return True
 
         return False
